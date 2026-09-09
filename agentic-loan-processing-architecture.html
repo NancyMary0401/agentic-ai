@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agentic Loan Processing Architecture</title>
+  <style>
+    :root { --navy:#14213d; --blue:#2563eb; --paper:#f6f8fc; --line:#cbd5e1; --ink:#172033; --muted:#526078; --agent:#eaf1ff; --service:#f1f5f9; --human:#fff1f2; --green:#e9f8f0; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    header { background:var(--navy); color:#fff; padding:42px max(22px,calc((100% - 1120px)/2)); }
+    h1 { margin:0 0 8px; font-size:clamp(1.8rem,4vw,2.7rem); }
+    header p { margin:0; color:#dbe7ff; max-width:850px; }
+    main { width:min(1120px,calc(100% - 36px)); margin:28px auto 60px; }
+    .note { border-left:5px solid var(--blue); background:#fff; padding:15px 18px; margin-bottom:24px; }
+    .diagram { position:relative; display:grid; gap:18px; justify-items:center; }
+    .node { position:relative; z-index:1; width:min(100%,520px); padding:14px 18px; border:1px solid var(--line); border-radius:10px; text-align:center; background:#fff; }
+    .node b { display:block; font-size:1.05rem; }
+    .node small { color:var(--muted); }
+    .primary { background:var(--navy); color:#fff; border-color:var(--navy); }
+    .primary small { color:#dbe7ff; }
+    .agent { background:var(--agent); border-color:#a9c2ef; }
+    .service { background:var(--service); }
+    .human { background:var(--human); border-color:#f5b6c0; }
+    .success { background:var(--green); border-color:#9ed7b7; }
+    .down { width:2px; height:25px; background:var(--line); position:relative; }
+    .down::after { content:""; position:absolute; bottom:-1px; left:-4px; border-left:5px solid transparent; border-right:5px solid transparent; border-top:7px solid var(--line); }
+    .agents { width:100%; display:grid; grid-template-columns:repeat(auto-fit,minmax(205px,1fr)); gap:12px; }
+    .agents .node { width:100%; min-height:96px; }
+    .branch { width:100%; display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
+    .branch .node { width:100%; }
+    .label { color:var(--muted); font-size:.9rem; text-align:center; margin:0; }
+    h2 { margin:32px 0 10px; font-size:1.25rem; }
+    .legend { display:flex; flex-wrap:wrap; gap:14px; color:var(--muted); font-size:.9rem; margin-top:18px; }
+    .dot { display:inline-block; width:11px; height:11px; border:1px solid var(--line); margin-right:5px; border-radius:2px; vertical-align:-1px; }
+    @media (max-width:560px) { .branch { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Agentic Loan Processing Architecture</h1>
+    <p>Sep-23 personal-loan proof of concept: one main orchestrator coordinates specialised agents, services, state, and human escalation.</p>
+  </header>
+  <main>
+    <div class="note"><strong>Key idea:</strong> there is one main controller, <code>LoanAgentOrchestrator</code>. It uses LangGraph to remember workflow state and an LLM through LangChain to select approved specialised tools.</div>
+
+    <section class="diagram" aria-label="Agentic loan processing architecture diagram">
+      <div class="node"><b>Customer</b><small>Loan request, PAN/Aadhaar, city, salary document, agreement response</small></div>
+      <div class="down"></div>
+      <div class="node service"><b>CLI / Streamlit UI / Multi-turn FastAPI API</b><small>Collects input and shows the application status</small></div>
+      <div class="down"></div>
+      <div class="node primary"><b>Main Agent: LoanAgentOrchestrator</b><small>Controls the loan journey, creates tools, saves progress, and handles exceptions</small></div>
+      <div class="down"></div>
+      <div class="node agent"><b>LangGraph Workflow State</b><small>Purpose, amount, PAN, Aadhaar, city, salary path, completed steps, tool results, session status</small></div>
+      <div class="down"></div>
+      <div class="node agent"><b>LLM Planner via LangChain</b><small>Reads current state and chooses the next permitted tool; it does not directly access financial systems</small></div>
+      <div class="down"></div>
+
+      <div class="agents">
+        <div class="node agent"><b>User Interaction Agent</b><small>Asks for missing details and consent</small></div>
+        <div class="node agent"><b>Loan Purpose Agent</b><small>Classifies purpose and checks eligibility</small></div>
+        <div class="node agent"><b>Data Query + KYC Tools</b><small>Validates PAN/Aadhaar and retrieves customer data</small></div>
+        <div class="node agent"><b>Salary PDF Agent</b><small>Extracts salary details from a text-based PDF</small></div>
+        <div class="node agent"><b>Geo Policy Agent</b><small>Checks city, purpose, and requested amount</small></div>
+        <div class="node agent"><b>Risk Assessment Agent</b><small>Uses income, EMI, credit score, and amount</small></div>
+        <div class="node agent"><b>Agreement Agent</b><small>Creates EMI/terms and captures acceptance</small></div>
+      </div>
+
+      <div class="down"></div>
+      <div class="branch">
+        <div class="node service"><b>Data and external services</b><small>Sample loan dataset<br>Mock Aadhaar SQLite API<br>Mock PAN credit-score API<br>Policy JSON files</small></div>
+        <div class="node service"><b>Persistence</b><small>Session Manager<br><code>session_data/*.json</code><br>stores progress and enables resume</small></div>
+      </div>
+      <div class="down"></div>
+      <div class="branch">
+        <div class="node success"><b>Normal completion</b><small>Risk result → agreement → customer accepts or declines</small></div>
+        <div class="node human"><b>Human-in-the-loop escalation</b><small>After repeated invalid/unclear input, context is saved in <code>escalation_data</code> and a human operator responds through dashboard/API</small></div>
+      </div>
+    </section>
+
+    <h2>Control flow</h2>
+    <div class="note">Every specialised agent/tool returns a result to the shared LangGraph state. The orchestrator reads that updated state and continues to the next required step. This prevents duplicate questions and allows the session to resume later.</div>
+    <div class="legend">
+      <span><i class="dot" style="background:#eaf1ff"></i>Agentic workflow component</span>
+      <span><i class="dot" style="background:#f1f5f9"></i>Service or persistence component</span>
+      <span><i class="dot" style="background:#fff1f2"></i>Human-review path</span>
+      <span><i class="dot" style="background:#e9f8f0"></i>Normal outcome</span>
+    </div>
+  </main>
+</body>
+</html>

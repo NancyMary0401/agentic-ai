@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Agentic AI Interview Prep Tracker</title>
+<style>
+  :root{
+    --bg:#f7f4fb;
+    --panel:#ffffff;
+    --text:#2f2a3a;
+    --muted:#766f82;
+    --border:#e8e0f0;
+    --purple:#7c5cff;
+    --purple-soft:#eee8ff;
+    --green:#2f9e6f;
+    --green-soft:#e7f7ef;
+    --amber:#c58a12;
+    --amber-soft:#fff4d8;
+    --gray:#7a7480;
+    --gray-soft:#f0edf3;
+    --shadow:0 10px 30px rgba(85,61,117,.08);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter,Segoe UI,Arial,sans-serif;
+    background:linear-gradient(135deg,#f9f6ff 0%,#f4f8ff 100%);
+    color:var(--text);
+  }
+
+  .wrap{
+    max-width:1180px;
+    margin:40px auto;
+    padding:0 22px 50px;
+  }
+
+  .hero{
+    background:linear-gradient(135deg,#ffffff 0%,#f3edff 100%);
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:28px;
+    box-shadow:var(--shadow);
+    margin-bottom:24px;
+  }
+
+  h1{
+    margin:0 0 8px;
+    font-size:32px;
+  }
+
+  .subtitle{
+    color:var(--muted);
+    margin:0 0 24px;
+    line-height:1.6;
+  }
+
+  .summary{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+  }
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:16px;
+  }
+
+  .card strong{
+    display:block;
+    font-size:24px;
+    margin-bottom:4px;
+  }
+
+  .covered strong{color:var(--green)}
+  .partial strong{color:var(--amber)}
+  .pending strong{color:var(--gray)}
+
+  .section{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    margin-bottom:18px;
+    overflow:hidden;
+  }
+
+  .section-header{
+    padding:18px 20px;
+    background:var(--purple-soft);
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+
+  .section-header h2{
+    margin:0;
+    font-size:19px;
+  }
+
+  .priority{
+    font-size:12px;
+    font-weight:700;
+    padding:6px 10px;
+    border-radius:999px;
+    background:#fff;
+    border:1px solid var(--border);
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+  }
+
+  th,td{
+    padding:13px 16px;
+    text-align:left;
+    border-bottom:1px solid #f0ebf4;
+    vertical-align:top;
+  }
+
+  th{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--muted);
+    background:#fcfbfd;
+  }
+
+  tr:last-child td{border-bottom:none}
+
+  .badge{
+    display:inline-block;
+    padding:6px 9px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:700;
+    white-space:nowrap;
+  }
+
+  .b-covered{background:var(--green-soft);color:var(--green)}
+  .b-partial{background:var(--amber-soft);color:var(--amber)}
+  .b-pending{background:var(--gray-soft);color:var(--gray)}
+
+  .footer-note{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:20px;
+    box-shadow:var(--shadow);
+  }
+
+  .footer-note h3{margin-top:0}
+  .footer-note p{line-height:1.7;color:var(--muted)}
+
+  .memory{
+    margin-top:14px;
+    padding:14px 16px;
+    border-radius:14px;
+    background:#faf7ff;
+    border:1px dashed #cdbef6;
+    font-weight:600;
+  }
+
+  @media (max-width:760px){
+    .summary{grid-template-columns:1fr}
+    h1{font-size:26px}
+    th:nth-child(1),td:nth-child(1){width:46%}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <h1>Agentic AI Interview Prep Tracker</h1>
+    <p class="subtitle">A focused view of what has been covered, what has been introduced, and what is still pending for interview preparation.</p>
+    <div class="summary">
+      <div class="card covered">
+        <strong>Covered</strong>
+        <span>Core LLM basics, context, state, semantic memory, agent loop</span>
+      </div>
+      <div class="card partial">
+        <strong>Partial</strong>
+        <span>RAG, embeddings, vector DB, tool calling, agent workflows</span>
+      </div>
+      <div class="card pending">
+        <strong>Pending</strong>
+        <span>Multi-agent, reliability, security, MCP, evaluation, observability</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><h2>1. LLM Fundamentals</h2><span class="priority">Critical</span></div>
+    <table>
+      <thead><tr><th>Topic</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Tokens</td><td><span class="badge b-covered">Covered</span></td></tr>
+        <tr><td>Tokenization</td><td><span class="badge b-covered">Covered</span></td></tr>
+        <tr><td>BPE / Tokenizer Basics</td><td><span class="badge b-covered">Covered</span></td></tr>
+        <tr><td>Context</td><td><span class="badge b-covered">Covered</span></td></tr>
+        <tr><td>Context Window</td><td><span class="badge b-covered">Covered</span></td></tr>
+        <tr><td>Context vs Memory</td><td><span class="badge b-covered">Covered</span></td></tr>
+        <tr><td>Prompts</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Temperature</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Hallucination</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Structured Output</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>LLM vs SLM</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Reasoning Models</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Full LLM Request → Response Flow</td><td><span class="badge b-partial">Partial</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><h2>2. Embeddings + RAG Theory</h2><span class="priority">Critical</span></div>
+    <table>
+      <thead><tr><th>Topic</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Embeddings</td><td><span class="badge b-partial">Started</span></td></tr>
+        <tr><td>Semantic Similarity</td><td><span class="badge b-partial">Started</span></td></tr>
+        <tr><td>Vector DB</td><td><span class="badge b-partial">Started</span></td></tr>
+        <tr><td>Semantic Memory + Vector DB Relationship</td><td><span class="badge b-covered">Covered</span></td></tr>
+        <tr><td>Ingestion</td><td><span class="badge b-partial">Introduced</span></td></tr>
+        <tr><td>Parsing</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Chunking</td><td><span class="badge b-partial">Introduced</span></td></tr>
+        <tr><td>Top-K</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Semantic Search</td><td><span class="badge b-partial">Introduced</span></td></tr>
+        <tr><td>Keyword Search</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Hybrid Search</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Reranking</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Context Construction</td><td><span class="badge b-partial">Introduced</span></td></tr>
+        <tr><td>Grounding</td><td><span class="badge b-partial">Introduced</span></td></tr>
+        <tr><td>Offline RAG Flow</td><td><span class="badge b-partial">Partial</span></td></tr>
+        <tr><td>Online RAG Flow</td><td><span class="badge b-partial">Partial</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><h2>3. Tool / Function Calling</h2><span class="priority">Critical</span></div>
+    <table>
+      <thead><tr><th>Topic</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>What Tool Calling Is</td><td><span class="badge b-partial">Introduced</span></td></tr>
+        <tr><td>Tool Schemas</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Arguments</td><td><span class="badge b-partial">Introduced</span></td></tr>
+        <tr><td>Tool Selection</td><td><span class="badge b-partial">Introduced</span></td></tr>
+        <tr><td>Validation</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Execution</td><td><span class="badge b-partial">Introduced</span></td></tr>
+        <tr><td>Sequential Calls</td><td><span class="badge b-partial">Introduced</span></td></tr>
+        <tr><td>Parallel Calls</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Tool Errors</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Retries</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Permissions</td><td><span class="badge b-pending">Pending</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><h2>4. AI Agents + ReAct</h2><span class="priority">Critical</span></div>
+    <table>
+      <thead><tr><th>Topic</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>What an Agent Is</td><td><span class="badge b-covered">Covered</span></td></tr>
+        <tr><td>Agent vs Chatbot</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Agent vs Deterministic Workflow</td><td><span class="badge b-partial">Partial</span></td></tr>
+        <tr><td>Agent Loop</td><td><span class="badge b-covered">Covered</span></td></tr>
+        <tr><td>ReAct</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Planning</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Reasoning → Action → Observation</td><td><span class="badge b-partial">Partial</span></td></tr>
+        <tr><td>Termination Conditions</td><td><span class="badge b-pending">Pending</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><h2>5. State + Memory</h2><span class="priority">Critical</span></div>
+    <table>
+      <thead><tr><th>Topic</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>State</td><td><span class="badge b-covered">Covered</span></td></tr>
+        <tr><td>How States / Workflows Are Defined</td><td><span class="badge b-covered">Covered</span></td></tr>
+        <tr><td>State vs Memory</td><td><span class="badge b-covered">Covered</span></td></tr>
+        <tr><td>Conversation / Short-term Memory</td><td><span class="badge b-covered">Covered</span></td></tr>
+        <tr><td>Semantic Memory</td><td><span class="badge b-covered">Covered</span></td></tr>
+        <tr><td>Episodic Memory</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Persistent / Long-term Memory</td><td><span class="badge b-partial">Basic</span></td></tr>
+        <tr><td>Checkpointing</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Session State</td><td><span class="badge b-partial">Basic</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><h2>6. Multi-Agent Systems</h2><span class="priority">Critical</span></div>
+    <table>
+      <thead><tr><th>Topic</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Supervisor / Worker</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Specialized Agents</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Routing</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Handoffs</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Shared State</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Parallel Work</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Coordination</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>When NOT to Use Multi-Agent</td><td><span class="badge b-pending">Pending</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><h2>7. Reliability + Failure Handling</h2><span class="priority">Critical</span></div>
+    <table>
+      <thead><tr><th>Topic</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Max Steps</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Max Tool Calls</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Timeouts</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Retry / Backoff</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Duplicate Tool-call Detection</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Repeated-error Fingerprinting</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Idempotency</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Circuit Breaker</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Fallback</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Human Escalation</td><td><span class="badge b-pending">Pending</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><h2>8. Security + Guardrails + MCP</h2><span class="priority">High</span></div>
+    <table>
+      <thead><tr><th>Topic</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Prompt Injection</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Least Privilege</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Tool Authorization</td><td><span class="badge b-partial">Briefly Mentioned</span></td></tr>
+        <tr><td>Input / Output Validation</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>User Confirmation for Sensitive Actions</td><td><span class="badge b-partial">Briefly Mentioned</span></td></tr>
+        <tr><td>MCP Host / Client / Server</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>MCP Tools / Resources / Prompts</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Function Calling vs MCP</td><td><span class="badge b-pending">Pending</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><h2>9. Evaluation + Observability</h2><span class="priority">High</span></div>
+    <table>
+      <thead><tr><th>Topic</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Task Success</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Tool-call Accuracy</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>RAG Relevance</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Faithfulness</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>LLM-as-Judge</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Traces</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Logs</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Latency</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Token Usage</td><td><span class="badge b-pending">Pending</span></td></tr>
+        <tr><td>Cost</td><td><span class="badge b-pending">Pending</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer-note">
+    <h3>Recommended Learning Order</h3>
+    <p><strong>Finish LLM Fundamentals → Embeddings + RAG → Tool Calling → Agents + ReAct → State + Memory → Multi-Agent → Reliability → Security + MCP → Evaluation + Observability.</strong></p>
+    <div class="memory">🧠 Interview memory pattern: Concept → Example → Architecture → Memory Trick → Interview Question</div>
+  </div>
+
+</div>
+</body>
+</html>

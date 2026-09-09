@@ -1,0 +1,1458 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Multi-Agent Orchestration — 35-Step Learning Guide</title>
+<style>
+:root {
+  --bg:#f6f3ff; --panel:#ffffff; --ink:#231942; --muted:#6b6680;
+  --accent:#7c3aed; --accent2:#a78bfa; --line:#e7defe; --soft:#f0eaff;
+  --shadow:0 10px 30px rgba(78,45,130,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:
+radial-gradient(circle at 10% 0%,#eee8ff 0,transparent 30%),
+radial-gradient(circle at 90% 10%,#f7e8ff 0,transparent 28%),var(--bg);color:var(--ink)}
+.wrap{max-width:1040px;margin:auto;padding:42px 20px 72px}
+.hero{background:linear-gradient(135deg,#2b174f,#6d28d9);color:white;padding:34px;border-radius:28px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.08);right:-80px;top:-100px}
+.kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;opacity:.82;font-weight:800}
+h1{font-size:clamp(28px,5vw,48px);line-height:1.05;margin:10px 0 12px}
+.hero p{max-width:760px;margin:0;opacity:.9;font-size:16px;line-height:1.6}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 22px}
+button{border:1px solid var(--line);background:white;color:var(--ink);padding:10px 14px;border-radius:999px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(78,45,130,.05)}
+button:hover{border-color:var(--accent2);transform:translateY(-1px)}
+.progress{font-size:13px;color:var(--muted);margin-left:auto;align-self:center}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;margin:12px 0;box-shadow:0 8px 20px rgba(78,45,130,.045);overflow:hidden}
+summary{list-style:none;display:flex;align-items:center;gap:14px;padding:18px 20px;cursor:pointer;font-weight:800}
+summary::-webkit-details-marker{display:none}
+.num{min-width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:var(--soft);color:var(--accent);font-size:13px;letter-spacing:.05em}
+.title{flex:1}
+.chev{font-size:22px;color:var(--accent);transition:.2s}
+details[open] .chev{transform:rotate(180deg)}
+details[open] summary{background:#fbf9ff;border-bottom:1px solid var(--line)}
+.content{padding:20px 24px 24px;line-height:1.72}
+.content p{margin:10px 0}
+blockquote{margin:14px 0;padding:14px 16px;border-left:4px solid var(--accent);background:var(--soft);border-radius:10px;color:#3c2f5c}
+pre{background:#1f1833;color:#f8f5ff;padding:18px;border-radius:14px;overflow:auto;line-height:1.5;font-size:13px}
+code.inline{background:var(--soft);padding:2px 6px;border-radius:6px}
+strong{color:#3b1d72}
+.footer{text-align:center;color:var(--muted);margin-top:28px;font-size:13px}
+@media (max-width:640px){.hero{padding:26px 20px}.content{padding:16px}summary{padding:14px}.progress{width:100%;margin-left:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="kicker">Agentic AI • Interview Learning Guide</div>
+    <h1>Multi-Agent Orchestration<br>End-to-End Runtime Flow</h1>
+    <p>35 accordion-based learning steps covering orchestration, state, tokenization, tools, routing, parallelism, supervisor patterns, handoffs, loops, and the final response path.</p>
+  </section>
+
+  <div class="toolbar">
+    <button onclick="toggleAll(true)">Expand all</button>
+    <button onclick="toggleAll(false)">Collapse all</button>
+    <button onclick="openNext()">Open next step</button>
+    <div class="progress" id="progress">0 / 35 open</div>
+  </div>
+
+  
+    <details class="step" id="step-1">
+      <summary>
+        <span class="num">01</span>
+        <span class="title">1. First: What exactly is orchestration?</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p><strong>Orchestration is the mechanism that controls the workflow.</strong></p>
+
+<p>It answers:</p>
+
+<blockquote><strong>Who runs? When do they run? What data do they receive? What happens after they finish? When does the workflow stop?</strong></blockquote>
+
+<p>Suppose you have:</p>
+
+<pre><code>Research Agent</p>
+<p>Comparison Agent</p>
+<p>Writer Agent</p>
+<p>Reviewer Agent</code></pre>
+
+<p>Just defining those four agents doesn&#x27;t create a working system.</p>
+
+<p>Something has to coordinate:</p>
+
+<pre><code>Which agent starts?</p>
+
+<p>What does Research Agent receive?</p>
+
+<p>Where does its result go?</p>
+
+<p>Can two agents run simultaneously?</p>
+
+<p>What if one fails?</p>
+
+<p>Does Writer run before Comparison finishes?</p>
+
+<p>Who decides whether Reviewer should send it back?</p>
+
+<p>When is the workflow complete?</code></pre>
+
+<p>That responsibility is <strong>orchestration</strong>.</p>
+
+<p>🧠 Memory:</p>
+
+<p><strong>Orchestration = WHO + WHEN + WHAT NEXT</strong></p>
+      </div>
+    </details>
+    <details class="step" id="step-2">
+      <summary>
+        <span class="num">02</span>
+        <span class="title">2. The complete architecture</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>At a high level, imagine this:</p>
+
+<pre><code>USER</p>
+<p>                          │</p>
+<p>                          │ HTTP request</p>
+<p>                          ▼</p>
+<p>                    ┌───────────┐</p>
+<p>                    │  Backend  │</p>
+<p>                    │ API Layer │</p>
+<p>                    └─────┬─────┘</p>
+<p>                          │</p>
+<p>                          ▼</p>
+<p>                 ┌─────────────────┐</p>
+<p>                 │ Input Validation │</p>
+<p>                 │   / Guardrails   │</p>
+<p>                 └────────┬────────┘</p>
+<p>                          │</p>
+<p>                          ▼</p>
+<p>                 ┌─────────────────┐</p>
+<p>                 │  ORCHESTRATOR   │</p>
+<p>                 │                 │</p>
+<p>                 │ Workflow State  │</p>
+<p>                 │ Routing Logic   │</p>
+<p>                 │ Agent Runtime   │</p>
+<p>                 └────────┬────────┘</p>
+<p>                          │</p>
+<p>                  Supervisor Agent</p>
+<p>                          │</p>
+<p>              ┌───────────┴───────────┐</p>
+<p>              ▼                       ▼</p>
+<p>       Research Agent           Market Agent</p>
+<p>              │                       │</p>
+<p>           Web Tool                  Tool</p>
+<p>              │                       │</p>
+<p>              └───────────┬───────────┘</p>
+<p>                          ▼</p>
+<p>                   Comparison Agent</p>
+<p>                          │</p>
+<p>                          ▼</p>
+<p>                     Writer Agent</p>
+<p>                          │</p>
+<p>                          ▼</p>
+<p>                    Reviewer Agent</p>
+<p>                          │</p>
+<p>                    PASS / REVISE</p>
+<p>                          │</p>
+<p>                          ▼</p>
+<p>                    Final Response</p>
+<p>                          │</p>
+<p>                          ▼</p>
+<p>                         USER</code></pre>
+
+<p>Now let&#x27;s zoom <strong>all the way in</strong>.</p>
+      </div>
+    </details>
+    <details class="step" id="step-3">
+      <summary>
+        <span class="num">03</span>
+        <span class="title">3. Step 1 — User sends the request</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>The user types:</p>
+
+<blockquote>“Research electric vehicles, compare Tesla and BYD, and create a short report with the latest information.”</blockquote>
+
+<p>Your frontend might send:</p>
+
+<pre><code>{</p>
+<p>  &quot;message&quot;: &quot;Research electric vehicles, compare Tesla and BYD, and create a short report with the latest information.&quot;,</p>
+<p>  &quot;conversation_id&quot;: &quot;conv_123&quot;</p>
+<p>}</code></pre>
+
+<p>Usually:</p>
+
+<pre><code>Browser / Mobile App</p>
+<p>        ↓</p>
+<p>     HTTPS</p>
+<p>        ↓</p>
+<p>Backend API</code></pre>
+
+<p>For example:</p>
+
+<pre><code>POST /agent/run</code></pre>
+
+<p>At this point <strong>nothing magical has happened</strong>.</p>
+
+<p>It&#x27;s an ordinary application request.</p>
+      </div>
+    </details>
+    <details class="step" id="step-4">
+      <summary>
+        <span class="num">04</span>
+        <span class="title">4. Step 2 — Backend receives it</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>Your backend might be:</p>
+
+<pre><code>FastAPI</p>
+<p>Node.js</p>
+<p>Spring Boot</p>
+<p>etc.</code></pre>
+
+<p>The backend performs things such as:</p>
+
+<pre><code>Authentication</p>
+<p>     ↓</p>
+<p>Authorization</p>
+<p>     ↓</p>
+<p>Rate limiting</p>
+<p>     ↓</p>
+<p>Request validation</p>
+<p>     ↓</p>
+<p>Conversation lookup</p>
+<p>     ↓</p>
+<p>Agent runtime</code></pre>
+
+<p>Then the request enters your <strong>agent orchestration layer</strong>.</p>
+      </div>
+    </details>
+    <details class="step" id="step-5">
+      <summary>
+        <span class="num">05</span>
+        <span class="title">5. Step 3 — Create workflow state</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>This is extremely important.</p>
+
+<p>The orchestrator generally needs to maintain <strong>state</strong> for the current run.</p>
+
+<p>Conceptually:</p>
+
+<pre><code>{</p>
+<p>  &quot;user_request&quot;: &quot;Research electric vehicles...&quot;,</p>
+<p>  &quot;research&quot;: null,</p>
+<p>  &quot;market_data&quot;: null,</p>
+<p>  &quot;comparison&quot;: null,</p>
+<p>  &quot;draft&quot;: null,</p>
+<p>  &quot;review_status&quot;: null,</p>
+<p>  &quot;final_answer&quot;: null</p>
+<p>}</code></pre>
+
+<p>Think of this as the workflow&#x27;s <strong>shared notebook</strong>.</p>
+
+<p>Initially:</p>
+
+<pre><code>research       = EMPTY</p>
+<p>market_data    = EMPTY</p>
+<p>comparison     = EMPTY</p>
+<p>draft          = EMPTY</p>
+<p>review_status  = EMPTY</code></pre>
+
+<p>As agents execute, the state evolves.</p>
+
+<p>🧠</p>
+
+<p><strong>Agents = workers</strong></p>
+
+<p><strong>Orchestrator = manager</strong></p>
+
+<p><strong>State = shared project file</strong></p>
+      </div>
+    </details>
+    <details class="step" id="step-6">
+      <summary>
+        <span class="num">06</span>
+        <span class="title">6. Step 4 — Construct the Supervisor&#x27;s model input</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>Now we finally reach the <strong>LLM level</strong>.</p>
+
+<p>The model doesn&#x27;t receive only:</p>
+
+<blockquote>&quot;Research electric vehicles...&quot;</blockquote>
+
+<p>The application constructs a context containing things such as:</p>
+
+<pre><code>SYSTEM INSTRUCTIONS</p>
+
+<p>You are the supervisor of an EV research system.</p>
+
+<p>Available specialists:</p>
+
+<p>1. Research Agent</p>
+<p>   Use for general EV research.</p>
+
+<p>2. Market Agent</p>
+<p>   Use for current market information.</p>
+
+<p>3. Comparison Agent</p>
+<p>   Use when information is available</p>
+<p>   and products need comparison.</p>
+
+<p>4. Writer Agent</p>
+<p>   Use to produce the report.</p>
+
+<p>USER</p>
+
+<p>Research electric vehicles, compare Tesla and BYD,</p>
+<p>and create a short report with the latest information.</code></pre>
+
+<p>Depending on the implementation, the available agents may be represented to the model as <strong>tools/handoffs with schemas</strong>, rather than just prose descriptions.</p>
+      </div>
+    </details>
+    <details class="step" id="step-7">
+      <summary>
+        <span class="num">07</span>
+        <span class="title">7. Now comes tokenization</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>Here&#x27;s the important distinction.</p>
+
+<p>The LLM doesn&#x27;t internally process your sentence as a Java/Python string.</p>
+
+<p>Before inference, text is encoded into <strong>tokens</strong>.</p>
+
+<p>Simplified example:</p>
+
+<pre><code>&quot;Research electric vehicles and compare Tesla and BYD&quot;</code></pre>
+
+<p>could conceptually become pieces like:</p>
+
+<pre><code>&quot;Research&quot;</p>
+<p>&quot; electric&quot;</p>
+<p>&quot; vehicles&quot;</p>
+<p>&quot; and&quot;</p>
+<p>&quot; compare&quot;</p>
+<p>&quot; Tesla&quot;</p>
+<p>&quot; and&quot;</p>
+<p>&quot; BY&quot;</p>
+<p>&quot;D&quot;</code></pre>
+
+<p>That&#x27;s only an illustration; <strong>actual token boundaries depend on the model&#x27;s tokenizer</strong>.</p>
+
+<p>Those tokens map to integer token IDs:</p>
+
+<pre><code>Token text           Token ID</p>
+
+<p>Research       →     48123</p>
+<p> electric      →      7291</p>
+<p> vehicles      →     16532</p>
+<p> ...</code></pre>
+
+<p>Conceptually:</p>
+
+<pre><code>Text</p>
+<p> ↓</p>
+<p>Tokenizer</p>
+<p> ↓</p>
+<p>Token IDs</p>
+<p> ↓</p>
+<p>Model</code></pre>
+      </div>
+    </details>
+    <details class="step" id="step-8">
+      <summary>
+        <span class="num">08</span>
+        <span class="title">8. Tokens become vectors</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>Each token ID is mapped to an <strong>embedding vector</strong>.</p>
+
+<p>Conceptually:</p>
+
+<pre><code>&quot;Tesla&quot;</p>
+<p>   ↓</p>
+<p>Token ID</p>
+<p>   ↓</p>
+<p>Embedding</p>
+<p>   ↓</p>
+<p>[0.17, -0.82, 0.44, 0.09, ...]</code></pre>
+
+<p>The actual vectors are high-dimensional numerical representations.</p>
+
+<p>So:</p>
+
+<pre><code>Tokens</p>
+<p>   ↓</p>
+<p>Embeddings</p>
+<p>   ↓</p>
+<p>Transformer layers</p>
+<p>   ↓</p>
+<p>Contextual representations</code></pre>
+      </div>
+    </details>
+    <details class="step" id="step-9">
+      <summary>
+        <span class="num">09</span>
+        <span class="title">9. Transformer processes the context</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>Through its transformer architecture, the model processes relationships among tokens in context.</p>
+
+<p>It can relate concepts such as:</p>
+
+<pre><code>&quot;compare&quot;</p>
+<p>    ↕</p>
+<p>Tesla</p>
+<p>    ↕</p>
+<p>BYD</p>
+<p>    ↕</p>
+<p>latest information</p>
+<p>    ↕</p>
+<p>research</code></pre>
+
+<p>At a simplified level, the model is repeatedly computing a probability distribution for what token should come next.</p>
+      </div>
+    </details>
+    <details class="step" id="step-10">
+      <summary>
+        <span class="num">10</span>
+        <span class="title">10. The supervisor needs to choose an action</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>Here&#x27;s where <strong>agentic behavior emerges from the surrounding runtime</strong>.</p>
+
+<p>The model may determine:</p>
+
+<blockquote>I need EV research first.</blockquote>
+
+<p>But it doesn&#x27;t have to output that as ordinary prose.</p>
+
+<p>It can produce a <strong>structured tool call</strong>.</p>
+
+<p>Conceptually:</p>
+
+<pre><code>{</p>
+<p>  &quot;tool&quot;: &quot;research_agent&quot;,</p>
+<p>  &quot;arguments&quot;: {</p>
+<p>    &quot;topic&quot;: &quot;current EV technology and Tesla/BYD&quot;</p>
+<p>  }</p>
+<p>}</code></pre>
+
+<p>The critical point:</p>
+
+<p>### The LLM itself isn&#x27;t directly launching another Python process.</p>
+
+<p>It generates an output indicating:</p>
+
+<blockquote><strong>Call this tool/agent with these arguments.</strong></blockquote>
+
+<p>The <strong>agent runtime/orchestrator</strong> interprets that output and performs the actual invocation.</p>
+
+<p>This separation is extremely important.</p>
+
+<pre><code>LLM</p>
+<p> ↓</p>
+<p>&quot;I want Research Agent&quot;</p>
+<p> ↓</p>
+<p>Runtime / Orchestrator</p>
+<p> ↓</p>
+<p>Actually invokes Research Agent</code></pre>
+      </div>
+    </details>
+    <details class="step" id="step-11">
+      <summary>
+        <span class="num">11</span>
+        <span class="title">11. Now Research Agent gets its own context</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>The Research Agent can have a completely different system prompt.</p>
+
+<pre><code>SYSTEM:</p>
+
+<p>You are an EV Research Agent.</p>
+
+<p>Your responsibility is to gather factual information</p>
+<p>about electric vehicles.</p>
+
+<p>Use web search when current information is required.</p>
+
+<p>Do not write the final report.</code></pre>
+
+<p>Then it receives the delegated task:</p>
+
+<pre><code>USER/TASK:</p>
+
+<p>Research current EV technology and relevant</p>
+<p>Tesla/BYD information.</code></pre>
+
+<p>And its available tools might be:</p>
+
+<pre><code>web_search</p>
+<p>retrieve_documents</code></pre>
+
+<p>So another LLM invocation occurs.</p>
+      </div>
+    </details>
+    <details class="step" id="step-12">
+      <summary>
+        <span class="num">12</span>
+        <span class="title">12. More tokens!</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>This is important for understanding <strong>multi-agent cost</strong>.</p>
+
+<p>We had:</p>
+
+<pre><code>Supervisor LLM call</code></pre>
+
+<p>Now we have:</p>
+
+<pre><code>Research Agent LLM call</code></pre>
+
+<p>Meaning another context is tokenized and processed.</p>
+
+<p>If Research Agent decides:</p>
+
+<blockquote>&quot;I need current information.&quot;</blockquote>
+
+<p>it may produce:</p>
+
+<pre><code>{</p>
+<p>  &quot;tool&quot;: &quot;web_search&quot;,</p>
+<p>  &quot;arguments&quot;: {</p>
+<p>    &quot;query&quot;: &quot;Tesla BYD EV latest information&quot;</p>
+<p>  }</p>
+<p>}</code></pre>
+      </div>
+    </details>
+    <details class="step" id="step-13">
+      <summary>
+        <span class="num">13</span>
+        <span class="title">13. Tool execution happens outside the LLM</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>The runtime sees:</p>
+
+<pre><code>tool = web_search</code></pre>
+
+<p>and executes actual software:</p>
+
+<pre><code>LLM</p>
+<p> ↓</p>
+<p>Tool request</p>
+<p> ↓</p>
+<p>Agent Runtime</p>
+<p> ↓</p>
+<p>Web Search API</p>
+<p> ↓</p>
+<p>Internet</code></pre>
+
+<p>The web search returns data.</p>
+
+<p>Example:</p>
+
+<pre><code>{</p>
+<p>  &quot;results&quot;: [</p>
+<p>    {...},</p>
+<p>    {...},</p>
+<p>    {...}</p>
+<p>  ]</p>
+<p>}</code></pre>
+      </div>
+    </details>
+    <details class="step" id="step-14">
+      <summary>
+        <span class="num">14</span>
+        <span class="title">14. Tool result goes BACK into the agent</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>Now something very important happens.</p>
+
+<p>The tool output becomes additional context for the next model invocation.</p>
+
+<p>Conceptually:</p>
+
+<pre><code>SYSTEM</p>
+<p>&quot;You are EV Research Agent...&quot;</p>
+
+<p>TASK</p>
+<p>&quot;Research Tesla and BYD...&quot;</p>
+
+<p>ASSISTANT</p>
+<p>tool_call(web_search)</p>
+
+<p>TOOL</p>
+<p>&lt;Search results&gt;</p>
+
+<p>ASSISTANT</p>
+<p>???</code></pre>
+
+<p>Everything relevant is assembled again.</p>
+
+<p>Then:</p>
+
+<pre><code>Context</p>
+<p> ↓</p>
+<p>Tokenization</p>
+<p> ↓</p>
+<p>LLM</p>
+<p> ↓</p>
+<p>Next-token generation</code></pre>
+
+<p>The Research Agent can now synthesize the retrieved information.</p>
+      </div>
+    </details>
+    <details class="step" id="step-15">
+      <summary>
+        <span class="num">15</span>
+        <span class="title">15. Agent produces structured output</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>For example:</p>
+
+<pre><code>{</p>
+<p>  &quot;tesla&quot;: {</p>
+<p>    &quot;summary&quot;: &quot;...&quot;,</p>
+<p>    &quot;sources&quot;: [&quot;...&quot;]</p>
+<p>  },</p>
+<p>  &quot;byd&quot;: {</p>
+<p>    &quot;summary&quot;: &quot;...&quot;,</p>
+<p>    &quot;sources&quot;: [&quot;...&quot;]</p>
+<p>  }</p>
+<p>}</code></pre>
+
+<p>The orchestrator receives it.</p>
+
+<p>Now workflow state becomes:</p>
+
+<pre><code>BEFORE</p>
+
+<p>research = null</p>
+
+
+<p>AFTER</p>
+
+<p>research = {</p>
+<p>   Tesla: ...,</p>
+<p>   BYD: ...</p>
+<p>}</code></pre>
+      </div>
+    </details>
+    <details class="step" id="step-16">
+      <summary>
+        <span class="num">16</span>
+        <span class="title">16. Meanwhile — Parallel orchestration</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>Remember the <strong>Market Agent</strong>?</p>
+
+<p>It may not depend on Research Agent.</p>
+
+<p>Therefore the orchestrator can execute:</p>
+
+<pre><code>Supervisor</p>
+<p>                  ↓</p>
+<p>         ┌────────┴────────┐</p>
+<p>         ↓                 ↓</p>
+<p>   Research Agent      Market Agent</p>
+<p>         ↓                 ↓</p>
+<p>      Web Tool          Market Tool</p>
+<p>         ↓                 ↓</p>
+<p>      Result             Result</code></pre>
+
+<p><strong>simultaneously</strong>.</p>
+
+<p>In Python this could be implemented with asynchronous concurrency such as <code class="inline">asyncio.gather</code>; in JavaScript, analogous workflows commonly use <code class="inline">Promise.all</code>.</p>
+
+<p>Now state might be:</p>
+
+<pre><code>research      = COMPLETE</p>
+<p>market_data   = COMPLETE</p>
+<p>comparison    = EMPTY</p>
+<p>draft         = EMPTY</p>
+<p>review        = EMPTY</code></pre>
+      </div>
+    </details>
+    <details class="step" id="step-17">
+      <summary>
+        <span class="num">17</span>
+        <span class="title">17. How does the system know what runs next?</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>There are two major approaches.</p>
+      </div>
+    </details>
+    <details class="step" id="step-18">
+      <summary>
+        <span class="num">18</span>
+        <span class="title">18. Type 1 — Code-driven orchestration</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>You explicitly define:</p>
+
+<pre><code>START</p>
+<p> ↓</p>
+<p>Research + Market</p>
+<p> ↓</p>
+<p>Comparison</p>
+<p> ↓</p>
+<p>Writer</p>
+<p> ↓</p>
+<p>Reviewer</p>
+<p> ↓</p>
+<p>END</code></pre>
+
+<p>Your application determines the transitions.</p>
+
+<p>Conceptually:</p>
+
+<pre><code>research, market = await run_parallel(...)</p>
+
+<p>comparison = await comparison_agent(</p>
+<p>    research,</p>
+<p>    market</p>
+<p>)</p>
+
+<p>draft = await writer_agent(comparison)</p>
+
+<p>review = await reviewer_agent(draft)</code></pre>
+
+<p>Very deterministic.</p>
+      </div>
+    </details>
+    <details class="step" id="step-19">
+      <summary>
+        <span class="num">19</span>
+        <span class="title">19. Type 2 — LLM-driven orchestration</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>Instead, you tell the Supervisor:</p>
+
+<pre><code>Available agents:</p>
+
+<p>Research</p>
+<p>Market</p>
+<p>Comparison</p>
+<p>Writer</p>
+<p>Reviewer</p>
+
+<p>Determine what should happen next.</code></pre>
+
+<p>Then after Research finishes, the Supervisor LLM may receive:</p>
+
+<pre><code>User goal</p>
+<p>+</p>
+<p>Current state</p>
+<p>+</p>
+<p>Available agents</code></pre>
+
+<p>and choose:</p>
+
+<pre><code>{</p>
+<p>  &quot;next_agent&quot;: &quot;comparison_agent&quot;</p>
+<p>}</code></pre>
+
+<p>So:</p>
+
+<pre><code>State</p>
+<p> ↓</p>
+<p>Supervisor LLM</p>
+<p> ↓</p>
+<p>Decision</p>
+<p> ↓</p>
+<p>Runtime</p>
+<p> ↓</p>
+<p>Next Agent</code></pre>
+
+<p>That&#x27;s <strong>dynamic routing</strong>.</p>
+      </div>
+    </details>
+    <details class="step" id="step-20">
+      <summary>
+        <span class="num">20</span>
+        <span class="title">20. Type 3 — Hybrid orchestration ⭐</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>This is often a strong production design.</p>
+
+<p>Some decisions should be deterministic.</p>
+
+<p>Some decisions benefit from LLM reasoning.</p>
+
+<p>For example:</p>
+
+<pre><code>Request</p>
+<p>                      ↓</p>
+<p>                Supervisor LLM</p>
+<p>                      ↓</p>
+<p>              Understand Intent</p>
+<p>                      ↓</p>
+<p>          ┌───────────┴───────────┐</p>
+<p>          ↓                       ↓</p>
+<p>     Research Agent          Market Agent</p>
+<p>          └───────────┬───────────┘</p>
+<p>                      ↓</p>
+<p>              CODE-DEFINED RULE</p>
+<p>        &quot;Wait until BOTH complete&quot;</p>
+<p>                      ↓</p>
+<p>               Comparison Agent</p>
+<p>                      ↓</p>
+<p>                  Writer</p>
+<p>                      ↓</p>
+<p>                 Reviewer</p>
+<p>                      ↓</p>
+<p>                ┌─────┴─────┐</p>
+<p>                ↓           ↓</p>
+<p>              PASS         FAIL</p>
+<p>                ↓           ↓</p>
+<p>              END        Writer</p>
+<p>                             ↑</p>
+<p>                             │</p>
+<p>                          feedback</code></pre>
+
+<p>You don&#x27;t need an LLM to reason:</p>
+
+<blockquote>&quot;Did both required tasks finish?&quot;</blockquote>
+
+<p>Code can determine that reliably.</p>
+
+<p>But you might use an LLM for:</p>
+
+<blockquote>&quot;What kind of research is necessary?&quot;</blockquote>
+
+<p>That is a more semantic decision.</p>
+      </div>
+    </details>
+    <details class="step" id="step-21">
+      <summary>
+        <span class="num">21</span>
+        <span class="title">21. Sequential orchestration</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>You already learned this:</p>
+
+<pre><code>Research</p>
+<p>   ↓</p>
+<p>Comparison</p>
+<p>   ↓</p>
+<p>Writer</p>
+<p>   ↓</p>
+<p>Reviewer</code></pre>
+
+<p>Each output becomes input to the next.</p>
+
+<p>Best when:</p>
+
+<pre><code>B requires A</p>
+<p>C requires B</p>
+<p>D requires C</code></pre>
+      </div>
+    </details>
+    <details class="step" id="step-22">
+      <summary>
+        <span class="num">22</span>
+        <span class="title">22. Parallel orchestration</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <pre><code>Supervisor</p>
+<p>            ↓</p>
+<p>     ┌──────┴──────┐</p>
+<p>     ↓             ↓</p>
+<p>Research        Market</p>
+<p>     ↓             ↓</p>
+<p>     └──────┬──────┘</p>
+<p>            ↓</p>
+<p>        Comparison</code></pre>
+
+<p>Best when:</p>
+
+<pre><code>A does NOT require B</p>
+<p>B does NOT require A</code></pre>
+
+<p>Then merge/wait.</p>
+      </div>
+    </details>
+    <details class="step" id="step-23">
+      <summary>
+        <span class="num">23</span>
+        <span class="title">23. Supervisor orchestration</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>Here the supervisor stays in control.</p>
+
+<pre><code>User</p>
+<p> ↓</p>
+<p>Supervisor</p>
+<p> ↓</p>
+<p>Research Agent</p>
+<p> ↓</p>
+<p>Supervisor</p>
+<p> ↓</p>
+<p>Comparison Agent</p>
+<p> ↓</p>
+<p>Supervisor</p>
+<p> ↓</p>
+<p>Writer</p>
+<p> ↓</p>
+<p>Supervisor</p>
+<p> ↓</p>
+<p>User</code></pre>
+
+<p>The specialist agents are essentially capabilities available to the manager.</p>
+
+<p>🧠</p>
+
+<p><strong>Supervisor = control comes BACK to manager.</strong></p>
+      </div>
+    </details>
+    <details class="step" id="step-24">
+      <summary>
+        <span class="num">24</span>
+        <span class="title">24. Handoff orchestration</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>This is different.</p>
+
+<p>Suppose:</p>
+
+<pre><code>User:</p>
+<p>&quot;I need help writing Python.&quot;</code></pre>
+
+<p>Triage Agent says:</p>
+
+<blockquote>Python Specialist should handle this.</blockquote>
+
+<p>Then:</p>
+
+<pre><code>User</p>
+<p> ↓</p>
+<p>Triage Agent</p>
+<p> ↓</p>
+<p>HANDOFF</p>
+<p> ↓</p>
+<p>Python Agent</p>
+<p> ↓</p>
+<p>Python Agent continues conversation</code></pre>
+
+<p>The Python Agent <strong>takes over</strong>.</p>
+
+<p>Control doesn&#x27;t necessarily return to the triage agent.</p>
+
+<p>### Manager vs Handoff</p>
+
+<pre><code>MANAGER</p>
+
+<p>User</p>
+<p> ↓</p>
+<p>Manager</p>
+<p> ↓</p>
+<p>Specialist</p>
+<p> ↓</p>
+<p>Manager</p>
+<p> ↓</p>
+<p>User</code></pre>
+
+<p>versus:</p>
+
+<pre><code>HANDOFF</p>
+
+<p>User</p>
+<p> ↓</p>
+<p>Triage</p>
+<p> ↓</p>
+<p>Specialist</p>
+<p> ↓</p>
+<p>User</code></pre>
+
+<p>This is an excellent interview distinction.</p>
+      </div>
+    </details>
+    <details class="step" id="step-25">
+      <summary>
+        <span class="num">25</span>
+        <span class="title">25. Hierarchical orchestration</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>For very large systems:</p>
+
+<pre><code>Master Supervisor</p>
+<p>                          ↓</p>
+<p>            ┌─────────────┴─────────────┐</p>
+<p>            ↓                           ↓</p>
+<p>      Research Supervisor         Report Supervisor</p>
+<p>            ↓                           ↓</p>
+<p>       ┌────┴────┐                ┌─────┴─────┐</p>
+<p>       ↓         ↓                ↓           ↓</p>
+<p>   Web Agent  Market Agent    Writer       Reviewer</code></pre>
+
+<p>Now delegation happens at multiple levels.</p>
+
+<p>Useful when you have many specialized capabilities.</p>
+      </div>
+    </details>
+    <details class="step" id="step-26">
+      <summary>
+        <span class="num">26</span>
+        <span class="title">26. Agent-to-Agent communication</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>There&#x27;s another architecture:</p>
+
+<pre><code>Agent A</p>
+<p>   ↓</p>
+<p>Agent B</p>
+<p>   ↓</p>
+<p>Agent C</code></pre>
+
+<p>Agents can communicate/delegate without one central manager controlling every interaction.</p>
+
+<p>For interoperability between independently implemented agents, the <strong>A2A protocol</strong> is one current standard aimed at agent-to-agent discovery, delegation, and result exchange. Its documentation distinguishes A2A from MCP: broadly, <strong>A2A is agent↔agent</strong>, while <strong>MCP is agent↔tools/resources</strong>.</p>
+
+<p>Don&#x27;t mix those concepts up.</p>
+      </div>
+    </details>
+    <details class="step" id="step-27">
+      <summary>
+        <span class="num">27</span>
+        <span class="title">27. Back to our architecture — Comparison Agent</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>Research and market data are ready.</p>
+
+<p>State:</p>
+
+<pre><code>{</p>
+<p>  &quot;research&quot;: &quot;...&quot;,</p>
+<p>  &quot;market_data&quot;: &quot;...&quot;,</p>
+<p>  &quot;comparison&quot;: null</p>
+<p>}</code></pre>
+
+<p>Comparison Agent receives:</p>
+
+<pre><code>SYSTEM:</p>
+<p>You are a product comparison specialist.</p>
+
+<p>INPUT:</p>
+<p>Research: ...</p>
+<p>Market Data: ...</p>
+
+<p>TASK:</p>
+<p>Compare Tesla and BYD.</code></pre>
+
+<p>Again:</p>
+
+<pre><code>Text/context</p>
+<p> ↓</p>
+<p>Tokenizer</p>
+<p> ↓</p>
+<p>Tokens</p>
+<p> ↓</p>
+<p>Embeddings</p>
+<p> ↓</p>
+<p>Transformer</p>
+<p> ↓</p>
+<p>Output token probabilities</p>
+<p> ↓</p>
+<p>Generated output</code></pre>
+
+<p>It generates:</p>
+
+<pre><code>{</p>
+<p>  &quot;comparison&quot;: {</p>
+<p>    &quot;technology&quot;: &quot;...&quot;,</p>
+<p>    &quot;market_position&quot;: &quot;...&quot;,</p>
+<p>    &quot;strengths&quot;: &quot;...&quot;,</p>
+<p>    &quot;weaknesses&quot;: &quot;...&quot;</p>
+<p>  }</p>
+<p>}</code></pre>
+
+<p>State updated.</p>
+      </div>
+    </details>
+    <details class="step" id="step-28">
+      <summary>
+        <span class="num">28</span>
+        <span class="title">28. Writer Agent</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>Now:</p>
+
+<pre><code>Research</p>
+<p>+</p>
+<p>Market data</p>
+<p>+</p>
+<p>Comparison</p>
+<p>      ↓</p>
+<p>Writer Agent</code></pre>
+
+<p>Its system prompt might say:</p>
+
+<pre><code>You are a professional report writer.</p>
+
+<p>Use only information provided in the workflow state.</p>
+
+<p>Produce a concise structured report.</code></pre>
+
+<p>It generates:</p>
+
+<pre><code>EV Market Comparison</p>
+
+<p>Introduction...</p>
+
+<p>Tesla...</p>
+
+<p>BYD...</p>
+
+<p>Comparison...</p>
+
+<p>Conclusion...</code></pre>
+
+<p>Store:</p>
+
+<pre><code>state.draft = generated_report</code></pre>
+      </div>
+    </details>
+    <details class="step" id="step-29">
+      <summary>
+        <span class="num">29</span>
+        <span class="title">29. Reviewer Agent</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>We don&#x27;t necessarily send it directly to the user.</p>
+
+<p>First:</p>
+
+<pre><code>Draft</p>
+<p> ↓</p>
+<p>Reviewer Agent</code></pre>
+
+<p>Reviewer checks:</p>
+
+<pre><code>Accuracy</p>
+<p>Completeness</p>
+<p>Structure</p>
+<p>Unsupported claims</p>
+<p>Citation coverage</p>
+<p>Formatting</code></pre>
+
+<p>And returns something structured:</p>
+
+<pre><code>{</p>
+<p>  &quot;status&quot;: &quot;REVISE&quot;,</p>
+<p>  &quot;issues&quot;: [</p>
+<p>    &quot;Market claim lacks supporting evidence.&quot;</p>
+<p>  ]</p>
+<p>}</code></pre>
+      </div>
+    </details>
+    <details class="step" id="step-30">
+      <summary>
+        <span class="num">30</span>
+        <span class="title">30. Now orchestration creates a LOOP</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>This is another major orchestration pattern:</p>
+
+<pre><code>Writer</p>
+<p>  ↓</p>
+<p>Reviewer</p>
+<p>  ↓</p>
+<p>PASS? ───── YES ───→ END</p>
+<p>  │</p>
+<p>  NO</p>
+<p>  ↓</p>
+<p>Writer</p>
+<p>  ↑</p>
+<p>feedback</code></pre>
+
+<p>So orchestration isn&#x27;t always:</p>
+
+<pre><code>A → B → C</code></pre>
+
+<p>It can be:</p>
+
+<pre><code>A → B → A → B → A → B</code></pre>
+
+<p>until some condition is met.</p>
+
+<p>But production systems should normally have limits such as:</p>
+
+<pre><code>max_iterations = 3</code></pre>
+
+<p>Otherwise you risk:</p>
+
+<pre><code>Writer → Reviewer → Writer → Reviewer → ...</code></pre>
+
+<p>and runaway latency/cost.</p>
+      </div>
+    </details>
+    <details class="step" id="step-31">
+      <summary>
+        <span class="num">31</span>
+        <span class="title">31. Finally — Final answer</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>Suppose Reviewer says:</p>
+
+<pre><code>{</p>
+<p>  &quot;status&quot;: &quot;PASS&quot;</p>
+<p>}</code></pre>
+
+<p>The orchestrator sets:</p>
+
+<pre><code>workflow_status = COMPLETE</code></pre>
+
+<p>The final answer is returned through:</p>
+
+<pre><code>Writer output</p>
+<p>     ↓</p>
+<p>Backend</p>
+<p>     ↓</p>
+<p>HTTP/streaming response</p>
+<p>     ↓</p>
+<p>Frontend</p>
+<p>     ↓</p>
+<p>User</code></pre>
+
+<p>If streaming is enabled, generated output can be surfaced incrementally rather than waiting for the entire response.</p>
+      </div>
+    </details>
+    <details class="step" id="step-32">
+      <summary>
+        <span class="num">32</span>
+        <span class="title">32. Now zoom out — THIS is the entire picture</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>Memorize this architecture:</p>
+
+<pre><code>USER</p>
+<p>                           │</p>
+<p>                           ▼</p>
+<p>                    ┌─────────────┐</p>
+<p>                    │ UI / Client │</p>
+<p>                    └──────┬──────┘</p>
+<p>                           │ HTTPS</p>
+<p>                           ▼</p>
+<p>                    ┌─────────────┐</p>
+<p>                    │ Backend API │</p>
+<p>                    └──────┬──────┘</p>
+<p>                           ▼</p>
+<p>                 ┌───────────────────┐</p>
+<p>                 │ Auth / Guardrails │</p>
+<p>                 └─────────┬─────────┘</p>
+<p>                           ▼</p>
+<p>               ┌───────────────────────┐</p>
+<p>               │     ORCHESTRATOR      │</p>
+<p>               │                       │</p>
+<p>               │ • Workflow State      │</p>
+<p>               │ • Routing             │</p>
+<p>               │ • Retry / Timeout     │</p>
+<p>               │ • Agent execution     │</p>
+<p>               │ • Observability       │</p>
+<p>               └───────────┬───────────┘</p>
+<p>                           │</p>
+<p>                           ▼</p>
+<p>                  ┌────────────────┐</p>
+<p>                  │ Supervisor LLM │</p>
+<p>                  └───────┬────────┘</p>
+<p>                          │</p>
+<p>                  chooses/delegates</p>
+<p>                          │</p>
+<p>              ┌───────────┴───────────┐</p>
+<p>              ▼                       ▼</p>
+<p>       ┌──────────────┐         ┌─────────────┐</p>
+<p>       │Research Agent│         │ Market Agent│</p>
+<p>       │     LLM      │         │     LLM     │</p>
+<p>       └──────┬───────┘         └──────┬──────┘</p>
+<p>              │                        │</p>
+<p>              ▼                        ▼</p>
+<p>         ┌─────────┐              ┌─────────┐</p>
+<p>         │  Tools  │              │  Tools  │</p>
+<p>         └────┬────┘              └────┬────┘</p>
+<p>              │                        │</p>
+<p>              └──────────┬─────────────┘</p>
+<p>                         ▼</p>
+<p>                   SHARED STATE</p>
+<p>                         │</p>
+<p>                         ▼</p>
+<p>                 Comparison Agent</p>
+<p>                         │</p>
+<p>                         ▼</p>
+<p>                    Writer Agent</p>
+<p>                         │</p>
+<p>                         ▼</p>
+<p>                   Reviewer Agent</p>
+<p>                         │</p>
+<p>                    ┌────┴────┐</p>
+<p>                    │         │</p>
+<p>                  REVISE     PASS</p>
+<p>                    │         │</p>
+<p>                    ▼         ▼</p>
+<p>                  Writer    FINAL</p>
+<p>                              │</p>
+<p>                              ▼</p>
+<p>                            USER</code></pre>
+      </div>
+    </details>
+    <details class="step" id="step-33">
+      <summary>
+        <span class="num">33</span>
+        <span class="title">33. And inside EVERY LLM box</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>Whenever you see:</p>
+
+<pre><code>┌─────────────────┐</p>
+<p>│ Research Agent  │</p>
+<p>└─────────────────┘</code></pre>
+
+<p>zoom inside it:</p>
+
+<pre><code>Agent Instructions</p>
+<p>        +</p>
+<p>User / delegated task</p>
+<p>        +</p>
+<p>Relevant conversation</p>
+<p>        +</p>
+<p>Relevant workflow state</p>
+<p>        +</p>
+<p>Tool definitions</p>
+<p>        ↓</p>
+<p>   Context construction</p>
+<p>        ↓</p>
+<p>     Tokenizer</p>
+<p>        ↓</p>
+<p>      Tokens</p>
+<p>        ↓</p>
+<p>     Embeddings</p>
+<p>        ↓</p>
+<p> Transformer computation</p>
+<p>        ↓</p>
+<p>Next-token probability distribution</p>
+<p>        ↓</p>
+<p> Select next token</p>
+<p>        ↓</p>
+<p> Repeat</p>
+<p>        ↓</p>
+<p> ┌──────┴────────┐</p>
+<p> ↓               ↓</p>
+<p>Text output    Tool/Handoff call</p>
+<p>                 ↓</p>
+<p>              Runtime</p>
+<p>                 ↓</p>
+<p>               Tool</p>
+<p>                 ↓</p>
+<p>            Tool result</p>
+<p>                 ↓</p>
+<p>             LLM again</code></pre>
+
+<p><strong>That is the connection between LLM fundamentals and Agentic AI.</strong></p>
+      </div>
+    </details>
+    <details class="step" id="step-34">
+      <summary>
+        <span class="num">34</span>
+        <span class="title">34. One correction that will make your interview answer stronger</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>Avoid saying:</p>
+
+<blockquote>&quot;The LLM executes the API.&quot;</blockquote>
+
+<p>More accurately:</p>
+
+<blockquote><strong>&quot;The model selects or emits a tool call, and the agent runtime executes the corresponding function/API and returns the tool result to the model.&quot;</strong></blockquote>
+
+<p>Similarly, avoid:</p>
+
+<blockquote>&quot;The agent automatically knows which agent to call.&quot;</blockquote>
+
+<p>Say:</p>
+
+<blockquote><strong>&quot;Depending on the orchestration design, routing can be determined by application code, by an LLM supervisor through tool/handoff selection, or by a hybrid of both.&quot;</strong></blockquote>
+
+<p>Those distinctions show that you understand what&#x27;s actually happening.</p>
+      </div>
+    </details>
+    <details class="step" id="step-35">
+      <summary>
+        <span class="num">35</span>
+        <span class="title">35. The architecture in one sentence</span>
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="content">
+        <p>If an interviewer says:</p>
+
+<p><strong>“Explain the end-to-end flow of a multi-agent application.”</strong></p>
+
+<p>You can answer:</p>
+
+<blockquote>“The user request enters the application through an API layer and is passed to the agent runtime. Relevant instructions, conversation context, workflow state, and available tool or agent schemas are assembled into the model context and tokenized. The supervisor model can then select an appropriate specialist through a tool call or handoff, or routing can be controlled deterministically by application code. Specialist agents may call external tools, whose results are added back into their context for further model inference. Their outputs update workflow state, and the orchestrator coordinates subsequent agents sequentially, in parallel, or through conditional loops. Once completion and validation conditions are satisfied, the final model output is generated token by token and streamed or returned through the backend to the user.”</blockquote>
+
+<p>That&#x27;s the <strong>complete mental model</strong> I want you to have.</p>
+      </div>
+    </details>
+
+  <div class="footer">Multi-Agent Systems Learning Guide • Self-contained HTML</div>
+</div>
+<script>
+const items=[...document.querySelectorAll('details.step')];
+const progress=document.getElementById('progress');
+function updateProgress(){
+  const n=items.filter(x=>x.open).length;
+  progress.textContent=`${n} / ${items.length} open`;
+}
+function toggleAll(v){
+  items.forEach(x=>x.open=v); updateProgress();
+}
+function openNext(){
+  const current=items.findIndex(x=>x.open);
+  if(current>=0) items[current].open=false;
+  const next=current<0?0:Math.min(current+1,items.length-1);
+  items[next].open=true; items[next].scrollIntoView({behavior:'smooth',block:'start'});
+  updateProgress();
+}
+items.forEach(x=>x.addEventListener('toggle',updateProgress));
+updateProgress();
+</script>
+</body>
+</html>

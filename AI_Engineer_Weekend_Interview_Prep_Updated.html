@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Engineer Weekend Interview Prep</title>
+  <style>
+    :root{
+      --bg:#fbf8ff;
+      --bg2:#fff9f6;
+      --panel:#ffffff;
+      --panel2:#f4effb;
+      --text:#3e3650;
+      --muted:#81778f;
+      --line:#e8deef;
+      --accent:#9b7fc4;
+      --accent2:#d9b8d5;
+      --good:#78bfa3;
+      --warn:#d7a85b;
+      --critical:#c7798d;
+      --shadow:rgba(105,82,130,.10);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,"Segoe UI",Arial,sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(222,205,242,.45), transparent 30%),
+        radial-gradient(circle at top right, rgba(250,220,224,.38), transparent 28%),
+        linear-gradient(180deg,var(--bg),var(--bg2));
+      color:var(--text);
+      min-height:100vh;
+    }
+    .wrap{max-width:1500px;margin:0 auto;padding:30px}
+    .hero{
+      background:rgba(255,255,255,.88);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:26px;
+      margin-bottom:24px;
+      box-shadow:0 14px 35px var(--shadow);
+      backdrop-filter:blur(10px);
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:30px;
+      color:#66517f;
+      letter-spacing:-.4px;
+    }
+    .sub{color:var(--muted);margin:0;line-height:1.5}
+    .stats{
+      display:flex;gap:14px;flex-wrap:wrap;margin-top:20px
+    }
+    .stat{
+      background:linear-gradient(135deg,#f7f1fc,#fff7f8);
+      border:1px solid var(--line);
+      border-radius:15px;
+      padding:11px 15px;
+      min-width:150px;
+    }
+    .stat span{color:var(--muted);font-size:13px}
+    .stat b{display:block;font-size:20px;color:#66517f;margin-top:3px}
+    .progress{
+      margin-top:17px;height:11px;background:#eee6f3;border-radius:999px;overflow:hidden
+    }
+    .bar{
+      height:100%;width:0;
+      background:linear-gradient(90deg,#a98bc9,#84c5ae);
+      transition:.25s;
+      border-radius:999px;
+    }
+    .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}
+    button{
+      background:#f7f0fb;
+      color:#625472;
+      border:1px solid #dfd1e8;
+      padding:9px 13px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;
+    }
+    button:hover{
+      background:#efe3f6;
+      border-color:#cbb7da;
+    }
+    .day{
+      margin:30px 0 12px;
+      font-size:22px;
+      color:#705c87;
+    }
+    .table-wrap{
+      overflow-x:auto;
+      border:1px solid var(--line);
+      border-radius:17px;
+      background:rgba(255,255,255,.9);
+      box-shadow:0 10px 26px rgba(105,82,130,.07);
+    }
+    table{width:100%;border-collapse:collapse;min-width:1180px}
+    th,td{
+      padding:14px 12px;
+      border-bottom:1px solid #eee6f2;
+      vertical-align:top;
+    }
+    th{
+      text-align:left;
+      background:#f1e9f7;
+      color:#675477;
+      position:sticky;
+      top:0;
+      z-index:1;
+      font-size:13px;
+      letter-spacing:.2px;
+    }
+    tbody tr{transition:background .2s ease}
+    tbody tr:hover{background:#fdf9ff}
+    tr.done td{opacity:.52;text-decoration:line-through}
+    tr.done td.status-cell{text-decoration:none;opacity:1}
+    tr.done{background:#f4fbf7}
+    .time{white-space:nowrap;font-weight:700;color:#6c5a7c}
+    .focus{font-weight:700;color:#4d415d}
+    .topics{color:#61566e;line-height:1.55}
+    .output{color:#766b80;line-height:1.5}
+    .priority{
+      display:inline-block;
+      padding:5px 9px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+    }
+    .critical{background:#f9e8ec;color:#a65e71}
+    .high{background:#fff3db;color:#a37b36}
+    .normal{background:#eee8f8;color:#79639a}
+    .break{color:#9a91a3;font-style:italic}
+    .check{
+      width:22px;
+      height:22px;
+      cursor:pointer;
+      accent-color:#82bfa7;
+    }
+    code{
+      background:#f1eaf6;
+      color:#73588d;
+      padding:2px 5px;
+      border-radius:5px;
+    }
+    .note{
+      margin-top:23px;
+      color:var(--muted);
+      font-size:14px;
+      background:rgba(255,255,255,.65);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px 14px;
+    }
+    @media(max-width:700px){
+      .wrap{padding:14px}
+      h1{font-size:24px}
+      .hero{padding:20px}
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <h1>AI Engineer – Weekend Round 2 Prep</h1>
+    <p class="sub">Reordered for maximum interview ROI: finish the theory tonight, connect it with tiny examples and hands-on work later tonight, then use Sunday for architecture, system design, the existing company Agentic AI project, and mock interview practice.</p>
+    <div class="stats">
+      <div class="stat"><span>Completed</span><b id="completedCount">0</b></div>
+      <div class="stat"><span>Total Study Blocks</span><b id="totalCount">0</b></div>
+      <div class="stat"><span>Progress</span><b id="percent">0%</b></div>
+    </div>
+    <div class="progress"><div class="bar" id="progressBar"></div></div>
+    <div class="controls">
+      <button onclick="resetAll()">Reset All</button>
+      <button onclick="markAll()">Mark All Done</button>
+    </div>
+  </section>
+
+
+  <section class="hero" style="margin-top:0;">
+    <h2 style="margin-top:0;color:#705c87;">New Study Strategy</h2>
+    <p class="sub">
+      <strong>Tonight — THEORY → CONNECT → SMALL HANDS-ON:</strong>
+      Learn the concepts in dependency order first: LLMs → RAG → Tool Calling → Agents → State & Memory → Multi-Agent → Reliability → Security → MCP → Evaluation & Observability.
+      Only after the concepts are clear, connect them with tiny examples and a small agent flow.
+      <br><br>
+      <strong>Sunday — DESIGN → PROJECT → DEFEND → MOCK:</strong>
+      Focus on Agentic AI architecture and system design, then deeply understand the existing company project, trace requests end-to-end, defend design decisions, and finish with interview grilling and a mock round.
+    </p>
+  </section>
+
+  <h2 class="day">Saturday — Theory First + Tiny Hands-on</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Focus</th>
+          <th>Topics to Cover</th>
+          <th>Hands-on / Output</th>
+          <th>Priority</th>
+          <th>Done</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-id="sat-new-1"><td class="time">9:50–10:15 PM</td><td class="focus">1. LLM Fundamentals</td><td class="topics">Tokens, tokenization, context window, prompts, temperature, hallucination, structured output, LLM vs SLM, reasoning models, request → response flow.</td><td class="output">Explain the LLM flow aloud in 2 minutes. Memory trick: <strong>Text → Tokens → Model → Tokens → Text</strong>.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sat-new-2"><td class="time">10:15–10:45 PM</td><td class="focus">2. Embeddings + RAG Theory</td><td class="topics">Embeddings, semantic similarity, vector DB, ingestion, parsing, chunking, Top-K, semantic/keyword/hybrid search, reranking, context construction, grounding.</td><td class="output">Draw offline + online RAG flow from memory.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sat-new-3"><td class="time">10:45–11:05 PM</td><td class="focus">3. Tool / Function Calling</td><td class="topics">Tool schemas, arguments, tool selection, validation, execution, sequential vs parallel calls, tool errors, retries, permissions.</td><td class="output">Explain: LLM chooses the tool; application code actually executes it.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sat-new-4"><td class="time">11:05–11:30 PM</td><td class="focus">4. AI Agents + ReAct</td><td class="topics">Agent vs chatbot vs deterministic workflow, agent loop, ReAct, planning, reasoning, action, observation, termination conditions.</td><td class="output">Explain one agent loop: User → LLM → Tool → Observation → LLM → Final Answer.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sat-new-5"><td class="time">11:30–11:55 PM</td><td class="focus">5. State + Memory</td><td class="topics">State vs memory, conversation/short-term memory, semantic memory, episodic memory, persistent memory, checkpointing, session state.</td><td class="output">Be able to answer: “What is stored in state, and what belongs in memory?”</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sat-new-6"><td class="time">11:55 PM–12:20 AM</td><td class="focus">6. Multi-Agent Systems</td><td class="topics">Supervisor/worker, specialized agents, routing, handoffs, shared state, parallel work, coordination, when NOT to use multi-agent.</td><td class="output">Sketch Supervisor → Transaction Agent / Support Agent.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sat-new-7"><td class="time">12:20–12:45 AM</td><td class="focus">7. Reliability + Failure Handling</td><td class="topics">Max steps, max tool calls, timeouts, retries/backoff, duplicate tool-call detection, repeated-error fingerprinting, idempotency, circuit breaker, fallback, human escalation.</td><td class="output">Answer: “What if 5 agents keep calling tools forever?”</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sat-new-8"><td class="time">12:45–1:05 AM</td><td class="focus">8. Security + Guardrails + MCP</td><td class="topics">Prompt injection, least privilege, tool authorization, input/output validation, user confirmation for sensitive actions; MCP host/client/server, tools/resources/prompts, function calling vs MCP.</td><td class="output">Explain how you would secure a banking agent before allowing a transfer tool call.</td><td><span class="priority high">High</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sat-new-9"><td class="time">1:05–1:20 AM</td><td class="focus">9. Evaluation + Observability</td><td class="topics">Task success, tool-call accuracy, RAG relevance/faithfulness, LLM-as-judge, traces, logs, latency, token usage and cost.</td><td class="output">Name 5 useful production metrics for an agentic system.</td><td><span class="priority high">High</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sat-new-10"><td class="time">1:20–1:50 AM</td><td class="focus">10. Tiny Hands-on: Connect Everything</td><td class="topics">Use one tiny banking flow: user asks balance → agent decides tool → Python function executes → observation returns → agent responds. Then add state, retry protection, and one RAG lookup.</td><td class="output">Build/trace one small end-to-end flow. Keep it simple — no framework-heavy implementation tonight.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sat-new-11"><td class="time">1:50–2:05 AM</td><td class="focus">Rapid Theory Revision</td><td class="topics">LLM → RAG → Tools → Agents → State/Memory → Multi-Agent → Reliability → Security → MCP → Evaluation.</td><td class="output">Explain each concept in 30–60 seconds without notes.</td><td><span class="priority high">High</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="day">Sunday — Architecture + Existing Project + Mock</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Focus</th>
+          <th>Topics to Cover</th>
+          <th>Hands-on / Output</th>
+          <th>Priority</th>
+          <th>Done</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-id="sun-new-1"><td class="time">9:00–10:00 AM</td><td class="focus">1. Agentic AI Architecture Framework</td><td class="topics">Requirements, scale, user flow, API/backend, orchestrator, LLM, RAG, agents, tools, state/memory, guardrails, observability, deployment.</td><td class="output">Memorize: Requirements → Scale → Architecture → Data/RAG → Agents/Tools → State → Reliability/Security → Evaluation.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sun-new-2"><td class="time">10:00–11:00 AM</td><td class="focus">2. Production System Design Basics</td><td class="topics">API gateway, authentication/authorization, databases, cache, queues, async processing, rate limiting, horizontal scaling, stateless services, concurrency.</td><td class="output">Draw a generic production AI/Agentic architecture.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sun-new-3"><td class="time">11:00 AM–12:15 PM</td><td class="focus">3. Architecture Problem #1 — Financial Agent</td><td class="topics">Banking assistant with RAG + transaction tools + state + security. Cover authentication, permissions, tool execution, approval, failures, observability, scaling.</td><td class="output">Whiteboard the architecture and defend every major component.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sun-new-4"><td class="time">12:15–1:15 PM</td><td class="focus">4. Architecture Problem #2 — Multi-Agent + RAG</td><td class="topics">Supervisor/workers, routing, parallelism, shared state, handoffs, RAG, tool access, termination, reliability, latency and cost.</td><td class="output">Design from scratch and explain why multi-agent is justified.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr><td class="time">1:15–2:00 PM</td><td class="focus break">Break</td><td class="topics break">Lunch / reset.</td><td class="output break">—</td><td><span class="priority normal">Break</span></td><td></td></tr>
+        <tr data-id="sun-new-5"><td class="time">2:00–3:30 PM</td><td class="focus">5. Existing Company Project — Understand It</td><td class="topics">Business problem, architecture, LLM/model, agents, prompts, tools/APIs, RAG, state, memory, orchestration, routing, persistence, deployment.</td><td class="output">Draw the actual project architecture and label every component.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sun-new-6"><td class="time">3:30–4:30 PM</td><td class="focus">6. Existing Project — Trace the Code Flow</td><td class="topics">Entry point, user request, prompt construction, orchestration, agent selection, tool execution, state updates, RAG retrieval, response generation.</td><td class="output">Trace one real request end-to-end through the project/codebase.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sun-new-7"><td class="time">4:30–5:15 PM</td><td class="focus">7. Existing Project — Failure, Security & Scale</td><td class="topics">API/tool failures, retries, malformed model output, loops, prompt injection, tool permissions, state recovery, observability, concurrency, scale and cost.</td><td class="output">Prepare answers for the project’s major failure modes and trade-offs.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sun-new-8"><td class="time">5:15–5:45 PM</td><td class="focus">8. Your Exact Contribution</td><td class="topics">What you personally designed/built, technical decisions you made, challenges, debugging, impact, improvements you would make now.</td><td class="output">Prepare a strong 2-minute project summary and a 10-minute walkthrough.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr><td class="time">5:45–6:15 PM</td><td class="focus break">Break</td><td class="topics break">Food / rest.</td><td class="output break">—</td><td><span class="priority normal">Break</span></td><td></td></tr>
+        <tr data-id="sun-new-9"><td class="time">6:15–7:00 PM</td><td class="focus">9. Targeted Python for Agentic AI</td><td class="topics">Functions, dictionaries/JSON, classes, exceptions, API retry logic, agent state, duplicate tool-call detection, max-step loop protection, simple routing.</td><td class="output">Solve 3–4 short interview-relevant snippets rather than generic DSA.</td><td><span class="priority high">High</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sun-new-10"><td class="time">7:00–7:45 PM</td><td class="focus">10. Company Project Grilling</td><td class="topics">Why agentic? Why not workflow? Why this LLM? Why multi-agent? How tools work? Where state lives? Failure handling? Security? Scaling? Cost? Your contribution?</td><td class="output">Rapid-fire interview Q&A without notes.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sun-new-11"><td class="time">7:45–8:45 PM</td><td class="focus">11. Full Round 2 Mock</td><td class="topics">Agentic AI theory, RAG, tools, architecture/system design, company project and Python follow-ups.</td><td class="output">60-minute interview simulation.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sun-new-12"><td class="time">8:45–9:30 PM</td><td class="focus">12. Fix Weak Areas</td><td class="topics">Revisit concepts or architectural decisions that were weak during the mock.</td><td class="output">Rewrite weak answers and redraw weak architecture sections.</td><td><span class="priority high">High</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+        <tr data-id="sun-new-13"><td class="time">9:30–10:15 PM</td><td class="focus">13. Final Interview Revision</td><td class="topics">LLM flow, RAG flow, agent loop, tool calling, state vs memory, multi-agent, loop prevention, security, system-design framework, company-project architecture.</td><td class="output">Final one-page mental cheat sheet + verbal walkthrough.</td><td><span class="priority critical">Critical</span></td><td class="status-cell"><input class="check" type="checkbox"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note">Your completed items are saved automatically in this browser using localStorage, so reopening the file should preserve your checkmarks unless browser storage is cleared.</p>
+</div>
+
+<script>
+  const checks = [...document.querySelectorAll('tr[data-id] .check')];
+  const total = checks.length;
+
+  function keyFor(row){ return 'ai-prep-' + row.dataset.id; }
+
+  function refresh(){
+    let done = 0;
+    document.querySelectorAll('tr[data-id]').forEach(row => {
+      const cb = row.querySelector('.check');
+      if(cb.checked){ row.classList.add('done'); done++; }
+      else row.classList.remove('done');
+    });
+    document.getElementById('completedCount').textContent = done;
+    document.getElementById('totalCount').textContent = total;
+    const pct = total ? Math.round(done*100/total) : 0;
+    document.getElementById('percent').textContent = pct + '%';
+    document.getElementById('progressBar').style.width = pct + '%';
+  }
+
+  document.querySelectorAll('tr[data-id]').forEach(row => {
+    const cb = row.querySelector('.check');
+    cb.checked = localStorage.getItem(keyFor(row)) === '1';
+    cb.addEventListener('change', () => {
+      localStorage.setItem(keyFor(row), cb.checked ? '1' : '0');
+      refresh();
+    });
+  });
+
+  function resetAll(){
+    document.querySelectorAll('tr[data-id]').forEach(row => {
+      const cb = row.querySelector('.check');
+      cb.checked = false;
+      localStorage.removeItem(keyFor(row));
+    });
+    refresh();
+  }
+
+  function markAll(){
+    document.querySelectorAll('tr[data-id]').forEach(row => {
+      const cb = row.querySelector('.check');
+      cb.checked = true;
+      localStorage.setItem(keyFor(row), '1');
+    });
+    refresh();
+  }
+
+  refresh();
+</script>
+</body>
+</html>
